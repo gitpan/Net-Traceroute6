@@ -3,10 +3,9 @@
 ###
 # File:		Makefile.PL
 # Author:	Janos Mohacsi, mohacsi@ik.bme.hu
-# Orignal Author:	Daniel Hagerty, hag@ai.mit.edu
-# Date:		Tue May 22 16:18:59 CEST 2001
-# Time-stamp:	
-# Description:	perl style Makefile for this frob
+# Orignal Traceroute.pm Author:	Daniel Hagerty, hag@ai.mit.edu
+# Date:		Fri Aug 31 11:00:04 CEST 2001	
+# Description:	perl style Makefile for this Traceroute6.pm
 #
 
 use ExtUtils::MakeMaker;

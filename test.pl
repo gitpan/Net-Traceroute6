@@ -1,23 +1,21 @@
 ###
 # Copyright 1998, 1999 Massachusetts Institute of Technology
+# Copyright 2001 Janos Mohacsi
 #
 # Permission to use, copy, modify, distribute, and sell this software and its
 # documentation for any purpose is hereby granted without fee, provided that
 # the above copyright notice appear in all copies and that both that
 # copyright notice and this permission notice appear in supporting
-# documentation, and that the name of M.I.T. not be used in advertising or
-# publicity pertaining to distribution of the software without specific,
-# written prior permission.  M.I.T. makes no representations about the
-# suitability of this software for any purpose.  It is provided "as is"
-# without express or implied warranty.
+# documentation.  
+# It is provided "as is" without express or implied warranty.
 
 ###
 # File:		test.pl
-# Author:	Daniel Hagerty, hag@ai.mit.edu
-# Date:		Sat Oct 17 22:33:40 1998
+# Author:       Janos Mohacsi mohacsi@ik.bme.hu
+# Original Traceroute.pm Author: Daniel Hagerty, hag@ai.mit.edu
+# Date:         Thu Aug 30 19:07:59 CEST 2001
 # Description:	test stuff for Tree::Radix
 #
-# $Id: test.pl,v 1.4 2000/11/17 22:45:16 hag Exp $
 
 # Before `make install' is performed this script should be runnable with
 # `make test'. After `make install' it should work as `perl test.pl'

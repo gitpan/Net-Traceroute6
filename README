@@ -1,14 +1,18 @@
-I have released version 0.01 of Net::Traceroute6 to CPAN and my home
-page.  My home page is currently http://www.ik.bme.hu/~mohacsi/ .  
+I have released version 0.02 of Net::Traceroute6 to CPAN and my home
+page.  My home page is currently http://www.dante.org.uk/~janos/ .  
 I hope you find the module useful.
 
 This traceroute6 module works by parsing your vendor's traceroute or 
-traceroute6 command.  As such, some systems may not work; 
-Windows is known not to.
+traceroute6 command.  
+On some system is known to work:
+*BSD (FreeBSD 4.0 or later, NetBSD 1.5 or later. OpenBSD 2.8 and later) 
+	+ any KAME patched BSD
+Solaris 8 or later
+
 Patches to support your favorite OS are welcome.
 
 Janos Mohacsi
-mohacsi@ik.bme.hu
+janos.mohacsi@dante.org.uk
 
 Example:
 	   use Net::Traceroute6;

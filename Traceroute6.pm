@@ -12,8 +12,8 @@
 ###
 # File:		Traceroute6.pm
 # Author:	Janos Mohacsi mohacsi@ik.bme.hu
-# Original Author: Daniel Hagerty, hag@ai.mit.edu
-# Date:		May 16 16:01:18 CEST 2001
+# Original Traceroute.pm Author: Daniel Hagerty, hag@ai.mit.edu
+# Date:		Thu Aug 30 19:07:59 CEST 2001
 # Description:  Perl traceroute module for performing traceroute6(1)
 #		functionality. Most of the code is imported from the 
 #               Net::Traceroute perl module. Added to support IPv6 and 
@@ -23,16 +23,26 @@
 
 # Currently attempts to parse the output of the system traceroute command,
 # which it expects will behave like the standard LBL traceroute program.
-# If it doesn't, (Windows, HPUX come to mind) you lose.
+# If it doesn't, (Windows, HPUX come to mind) you may lose.
 #
-# Could eventually be broken into several classes that know how to
-# deal with various traceroutes; could attempt to auto-recognize the
-# particular traceroute and parse it.
+# It tries figure out the particular traceroute from the configuration
+# and parse it.
+#
+# The IPv6 traceroute makes the situation worse, becuase no standard systax 
+# IPv6 traceroute. Some system prefer separate traceroute (understandable
+# since the ICMPv6 error options are so different.
+# For IPv6 currently only on some system is known to work:
+# *BSD (FreeBSD 4.0 or later, NetBSD 1.5 or later. OpenBSD 2.8 and later) 
+# 	+ any KAME patched BSD
+# Solaris 8 or later
+#
+# BUGS: currently only few ICMPv6 error options are recognised.
 #
 # Has a couple of random useful hooks for child classes to override.
 
 package Net::Traceroute6;
 
+use Config;
 use strict;
 no strict qw(subs);
 
@@ -47,7 +57,7 @@ use Socket;
 use Socket6;
 use Data::Dumper;		# Debugging
 
-$VERSION = "0.01";		# Version number is only incremented by
+$VERSION = "0.02";		# Version number is only incremented by
 				# hand.
 
 @ISA = qw(Exporter);
@@ -315,8 +325,7 @@ sub host_address {
 
     # Internal representation always uses IP address in string form.
     if(@_) {
-	my $inet = eval { inet_pton( $self->af(), $_[0]) } || die "unknown host: $_[0]";
-	$self->{$elem} = inet_ntop($self->af(), $inet);
+	$self->{$elem} = $_[0];
     }
     return $old;
 }
@@ -416,15 +425,14 @@ sub hop_query_time {
 sub _make_pipe {
     my $self = shift;
 
-    my @tr_args;
+    my @tr_args = $self->_tr_program_name();
 
-    push(@tr_args, $self->_tr_program_name());
     push(@tr_args, $self->_tr_cmd_args());
     push(@tr_args, $self->host_address());
 
     # XXX we probably shouldn't throw stderr away.
     open(SAVESTDERR, ">&STDERR");
-    open(STDERR, ">/dev/null");
+    open(STDERR, ">/tmp/log");
 
     my $pipe = new IO::Pipe;
 
@@ -449,7 +457,33 @@ sub _make_pipe {
 # Return the name of the traceroute executable itself
 sub _tr_program_name {
     my $self = shift;
-    ($self->af == PF_INET6) ? "traceroute6" : "traceroute";
+    my @args; # collector of arguments
+    my $os=$Config{'osname'};
+    my $prg_sw;
+
+OSNAMESW: {
+    # here comes Solaris
+    if ($os = ~ /solaris/) {
+	push (@args, "traceroute");
+	push (@args, "-A");
+    	$prg_sw = ($self->af == PF_INET6) ? "inet6" : "inet";
+	push (@args, $prg_sw);
+	last OSNAMESW;
+    }
+    # here comes AIX
+    #
+    # here comes Tru64 UNIX
+    #
+    # here comes W2K
+    #
+    # for the rest we assume traceroute6/traceroute
+    
+   	$prg_sw = ($self->af == PF_INET6) ? "traceroute6" : "traceroute";
+	push (@args, $prg_sw);
+	last OSNAMESW;
+    }
+
+    @args;
 }
 
 # How to map some of the instance variables to command line arguments
@@ -691,7 +725,7 @@ __END__
 
 =head1 NAME
 
-Net::Traceroute6- traceroute(1)/traceroute6(1) functionality in perl
+Net::Traceroute6 - traceroute(1)/traceroute6(1) functionality in perl
 
 =head1 SYNOPSIS
 
@@ -933,17 +967,27 @@ As such, it may not work on your system.  Support for more traceroute
 outputs (e.g. Windows, HPUX) could be done, although currently the
 code assumes there is "One true traceroute".
 
+For IPv6 currently only on some system is known to work:
+
+*BSD (FreeBSD 4.0 or later, NetBSD 1.5 or later. OpenBSD 2.8 and later) 
++ any KAME patched BSD
+
+Solaris 8 or later
+
+Currently only few ICMPv6 error options are recognised.
+
 The actual functionality of traceroute could also be implemented
 natively in perl or linked in from a C library.
 
 =head1 SEE ALSO
 
 traceroute(1)
+traceroute6(1)
 
 =head1 AUTHOR
 
+Janos Mohacsi <janos.mohacsi@dante.org.uk>
 Daniel Hagerty <hag@ai.mit.edu>
-Janos Mohacsi <mohacsi@ik.bme.hu>
 
 =head1 COPYRIGHT
 
