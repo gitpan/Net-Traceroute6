@@ -38,6 +38,11 @@
 #
 # BUGS: currently only few ICMPv6 error options are recognised.
 #
+# Changelog:
+# Version 0.01 : inital version
+# Version 0.02 : Solaris support
+# Version 0.03 : removing some debugging information
+#
 # Has a couple of random useful hooks for child classes to override.
 
 package Net::Traceroute6;
@@ -57,7 +62,7 @@ use Socket;
 use Socket6;
 use Data::Dumper;		# Debugging
 
-$VERSION = "0.02";		# Version number is only incremented by
+$VERSION = "0.03";		# Version number is only incremented by
 				# hand.
 
 @ISA = qw(Exporter);
@@ -432,7 +437,8 @@ sub _make_pipe {
 
     # XXX we probably shouldn't throw stderr away.
     open(SAVESTDERR, ">&STDERR");
-    open(STDERR, ">/tmp/log");
+    #open(STDERR, ">/tmp/log");
+    open(STDERR, ">/dev/null");
 
     my $pipe = new IO::Pipe;
 
